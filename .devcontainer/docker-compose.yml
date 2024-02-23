@@ -1,0 +1,69 @@
+version: "3.9"
+services:
+  # Base image containing dependencies.
+  base:
+    image: sentry_sim:base
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        ROS_DISTRO: noetic
+      target: base
+    # Interactive shell
+    stdin_open: true
+    tty: true
+    # Networking and IPC for ROS
+    network_mode: host
+    ipc: host
+    # Needed to display graphical applications
+    privileged: True
+    environment:
+      # Allows graphical programs in the container.
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      # Allows graphical programs in the container.
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mount the proper location for X11 server if you are running this in WSL
+      # - /mnt/wslg/.X11-unix:/tmp/.X11-unix
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+
+  # Overlay image containing the example source code.
+  overlay:
+    extends: base
+    image: sentry_sim:overlay
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+      target: overlay
+
+  # Developer container
+  dev:
+    extends: overlay
+    image: sentry_sim:dev
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+      target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=${USERNAME:-devuser}
+    volumes:
+      - ./.vscode:/overlay_ws/.vscode/:rw
+      # Mount catkin build artifacts for faster rebuilds
+      - ../build:/overlay_ws/build/:rw
+      - ../devel:/overlay_ws/devel/:rw
+      # Mount Source code
+      - ../sentry_bringup:/overlay_ws/src/sentry_bringup/:rw
+      - ../sentry_common:/overlay_ws/src/sentry_common/:rw
+      - ../zero2hero_rmua2022_simulation:/overlay_ws/src/zero2hero_rmua2022_simulation/:rw
+    user: ${USERNAME:-devuser}
+    command: sleep infinity
+
+  # Run foxglove bridge
+  foxglove_bridge:
+    extends: overlay
+    command: roslaunch --screen foxglove_bridge foxglove_bridge.launch port:=8765
+    restart: always

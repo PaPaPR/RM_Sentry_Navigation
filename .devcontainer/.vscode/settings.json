@@ -1,0 +1,14 @@
+{
+    "remote.autoForwardPorts": false,
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "ros.distro": "noetic",
+    "ros.rosSetupScript": "/opt/ros/noetic/install/setup.bash",
+    "python.autoComplete.extraPaths": [
+        "/sentry_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/sentry_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}
