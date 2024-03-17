@@ -1,31 +1,22 @@
 {
-  "configurations": [
-    {
-      "browse": {
-        "databaseFilename": "${default}",
-        "limitSymbolsToIncludedHeaders": false
-      },
-      "includePath": [
-        "/opt/ros/noetic/include/**",
-        "/sentry_ws/devel/include/**",
-        "/sentry_ws/src/livox_laser_simulation/include/**",
-        "/sentry_ws/src/Point-LIO/include/**",
-        "/sentry_ws/src/geometry2/tf2/include/**",
-        "/sentry_ws/src/geometry2/tf2_bullet/include/**",
-        "/sentry_ws/src/geometry2/tf2_eigen/include/**",
-        "/sentry_ws/src/geometry2/tf2_geometry_msgs/include/**",
-        "/sentry_ws/src/geometry2/tf2_kdl/include/**",
-        "/sentry_ws/src/geometry2/tf2_msgs/include/**",
-        "/sentry_ws/src/geometry2/tf2_ros/include/**",
-        "/sentry_ws/src/geometry2/tf2_sensor_msgs/include/**",
-        "/usr/include/**"
-      ],
-      "name": "ROS",
-      "intelliSenseMode": "gcc-x64",
-      "compilerPath": "/usr/bin/gcc",
-      "cStandard": "gnu11",
-      "cppStandard": "c++14"
-    }
-  ],
-  "version": 4
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/opt/ros/noetic/include/**",
+                "/underlay_ws/**",
+                "/overlay_ws/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14"
+        }
+    ],
+    "version": 4
 }

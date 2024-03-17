@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  # Developer container
+  dev:
+    container_name: sentry_dev
+    extends:
+      file: ./docker-compose.overlay.yml
+      service: overlay
+    image: sentry:dev
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+      target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${UID:-1000}
+        - USERNAME=${USERNAME:-devuser}
+    environment:
+      # Set specific display for X11
+      - DISPLAY=:1
+    volumes:
+      - ./.vscode:/overlay_ws/.vscode/:rw
+      # Mount catkin build artifacts for faster rebuilds
+      - ../build:/overlay_ws/build/:rw
+      - ../devel:/overlay_ws/devel/:rw
+      # Mount Source code
+      - ../sentry_bringup:/overlay_ws/src/sentry_bringup/:rw
+      - ../sentry_common:/overlay_ws/src/sentry_common/:rw
+      - ../sentry_description:/overlay_ws/src/sentry_description/:rw
+    user: ${USERNAME:-devuser}
+    command: sleep infinity
+
+  # Run foxglove bridge
+  foxglove_bridge:
+    container_name: foxglove_bridge
+    extends:
+      file: ./docker-compose.overlay.yml
+      service: overlay
+    command: roslaunch --screen foxglove_bridge foxglove_bridge.launch port:=8765
+    restart: always
