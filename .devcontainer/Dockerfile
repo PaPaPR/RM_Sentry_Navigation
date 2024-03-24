@@ -59,11 +59,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libusb-dev \
   && rm -rf /var/lib/apt/lists/*
 
+# Livox-SDK
+WORKDIR /tmp
+RUN git clone https://github.com/Livox-SDK/Livox-SDK.git --depth 1
+WORKDIR /tmp/Livox-SDK/build
+RUN cmake .. && make -j$(nproc)
+RUN make install
+
+# Livox-SDK 2
+WORKDIR /tmp
+RUN git clone https://github.com/Livox-SDK/Livox-SDK2.git --depth 1
+RUN mkdir -p /tmp/Livox-SDK2/build
+WORKDIR /tmp/Livox-SDK2/build
+RUN cmake .. && make -j$(nproc)
+RUN make install
+
 # Install addictional ROS packages
 WORKDIR /underlay_ws/src
 
 # Livox-ROS-Driver
 RUN git clone https://github.com/Livox-SDK/livox_ros_driver.git --depth 1
+
+# Livox-ROS-Driver 2
+RUN git clone https://github.com/Livox-SDK/livox_ros_driver2.git --depth 1
 
 # Point-LIO
 RUN git clone https://github.com/hku-mars/Point-LIO.git --depth 1 --branch point-lio-with-grid-map
@@ -87,7 +105,7 @@ RUN git clone https://github.com/MichaelFYang/far_planner.git --depth 1
 
 WORKDIR /underlay_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
- && catkin_make
+ && catkin_make -DROS_EDITION=ROS1
 
 # Create an overlay workspace
 RUN mkdir -p /overlay_ws/src
